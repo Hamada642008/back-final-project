@@ -7,7 +7,7 @@ const carts = require('./routes/carts_routes')
 
 const port = process.env.PORT
 const app = express();
-
+console.log(products, users, carts);
 app.use(express.json());
 app.use(cors());
 
