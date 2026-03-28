@@ -57,7 +57,7 @@ router.get("/", auth_middleware, async (req, res) => {
 });
 
 // to delete cart
-// حذف منتج من السلة
+
 router.delete("/remove/:product_id", auth_middleware, async (req, res) => {
     const userId = req.user.id;
     const { product_id } = req.params;

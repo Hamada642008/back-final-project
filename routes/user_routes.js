@@ -42,7 +42,7 @@ route.post('/login', async (req, res) => {
 
 // WELCOME (Protected)
 const auth_middleware = require('../middleware/auth_middleware');
-route.get('/welcome', auth_middleware, async (req, res) => {
+route.get('/', auth_middleware, async (req, res) => {
     res.json({
         message: "Welcome",
         user: req.user
