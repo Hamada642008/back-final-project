@@ -18,8 +18,8 @@ router.post('/add', auth_middleware, async (req, res) => {
 });
 
 // to get carts
-router.get("/", authMiddleware, async (req, res) => {
-  const userId = req.user.id; // جاي من auth middleware
+router.get("/", auth_middleware, async (req, res) => {
+    const userId = req.user.id; 
 
     try {
         const query = `
@@ -35,7 +35,7 @@ router.get("/", authMiddleware, async (req, res) => {
         `;
         const { rows } = await pool.query(query, [userId]);
 
-        res.json(rows); // هترجع داتا كاملة للفرونت
+        res.json(rows); 
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Server Error" });
