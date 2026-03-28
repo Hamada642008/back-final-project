@@ -20,44 +20,39 @@ router.post('/add', auth_middleware, async (req, res) => {
 
 // to get carts
 router.get("/", auth_middleware, async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     try {
-        
-        const { data: carts, error: cartsError } = await supabase
+        const { data, error } = await supabase
             .from('carts')
-            .select('*')
+            .select(`
+                quantity,
+                product_id,
+                products (
+                    id,
+                    name,
+                    price,
+                    image
+                )
+            `)
             .eq('user_id', userId);
 
-        if (cartsError) throw cartsError;
+        if (error) throw error;
 
-        if (!carts || carts.length === 0) return res.json([]);
-
-        
-        const productIds = carts.map(c => c.product_id);
-        const { data: products, error: productsError } = await supabase
-            .from('products')
-            .select('*')
-            .in('id', productIds);
-
-        if (productsError) throw productsError;
-
-        
-        const result = carts.map(c => {
-            const product = products.find(p => p.id === c.product_id);
-            return {
-                quantity: c.quantity,
-                product_id: c.product_id,
-                name: product?.name || "Unknown",
-                price: product?.price || 0,
-                image: product?.image || ""
-            };
-        });
+        // نرتب الشكل اللي يرجع للفرونت
+        const result = data.map(item => ({
+            quantity: item.quantity,
+            product_id: item.product_id,
+            name: item.products?.name,
+            price: item.products?.price,
+            image: item.products?.image
+        }));
 
         res.json(result);
 
     } catch (err) {
-        console.error(err);
+        console.error("Server error:", err);
         res.status(500).json({ error: "Server Error" });
     }
 });
