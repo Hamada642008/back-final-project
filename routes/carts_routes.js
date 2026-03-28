@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth_middleware = require('../middleware/auth_middleware');
 const Carts = require('../models/carts');
+const supabase = require('../config/db')
 
 // to add cart
 router.post('/add', auth_middleware, async (req, res) => {
