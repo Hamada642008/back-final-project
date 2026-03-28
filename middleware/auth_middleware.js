@@ -8,7 +8,7 @@ const auth_middleware = async (req,res,next) => {
         if (!token) {
             return res.status(401).json({message: 'Unauthorized'})
         }
-        
+        console.log("AUTH HEADER:", req.headers.authorization);
         const {data,error} = await supabase.auth.getUser(token)
 
         if (error) {
