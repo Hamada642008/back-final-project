@@ -11,20 +11,34 @@ router.post('/add', auth_middleware, async (req, res) => {
 
         await Carts.add(user_id, product_id, quantity || 1);
         res.json({ message: 'Added to cart' });
-        
+
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
 // to get carts
-router.get('/', auth_middleware, async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
+  const userId = req.user.id; // جاي من auth middleware
+
     try {
-        const user_id = req.user.id;
-        const data = await Carts.getByUser(user_id);
-        res.json(data);
+        const query = `
+        SELECT 
+            c.quantity, 
+            p.id AS product_id, 
+            p.name, 
+            p.price, 
+            p.image
+        FROM carts c
+        JOIN products p ON c.product_id = p.id
+        WHERE c.user_id = $1
+        `;
+        const { rows } = await pool.query(query, [userId]);
+
+        res.json(rows); // هترجع داتا كاملة للفرونت
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error(err);
+        res.status(500).json({ error: "Server Error" });
     }
 });
 
