@@ -9,7 +9,7 @@ const port = process.env.PORT
 const app = express();
 console.log(products, users, carts);
 app.use(express.json());
-app.use(cors());
+app.use(cors({allowedHeaders: ["Content-Type", "Authorization"]}));
 
 app.use('/products',products)
 app.use('/user',users);
