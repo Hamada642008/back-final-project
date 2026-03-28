@@ -40,7 +40,6 @@ router.get("/", auth_middleware, async (req, res) => {
 
         if (error) throw error;
 
-        // نرتب الشكل اللي يرجع للفرونت
         const result = data.map(item => ({
             quantity: item.quantity,
             product_id: item.product_id,
@@ -53,6 +52,28 @@ router.get("/", auth_middleware, async (req, res) => {
 
     } catch (err) {
         console.error("Server error:", err);
+        res.status(500).json({ error: "Server Error" });
+    }
+});
+
+// to delete cart
+// حذف منتج من السلة
+router.delete("/remove/:product_id", auth_middleware, async (req, res) => {
+    const userId = req.user.id;
+    const { product_id } = req.params;
+
+    try {
+        const { data, error } = await supabase
+            .from("carts")
+            .delete()
+            .eq("user_id", userId)
+            .eq("product_id", product_id);
+
+        if (error) throw error;
+
+        res.json({ message: "Item removed from cart" });
+    } catch (err) {
+        console.error(err);
         res.status(500).json({ error: "Server Error" });
     }
 });
