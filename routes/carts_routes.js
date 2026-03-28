@@ -11,6 +11,7 @@ router.post('/add', auth_middleware, async (req, res) => {
 
         await Carts.add(user_id, product_id, quantity || 1);
         res.json({ message: 'Added to cart' });
+        
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

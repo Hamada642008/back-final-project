@@ -18,6 +18,3 @@ app.use('/cart',carts)
 app.listen(port,()=>{
     console.log(`listening...`)
 })
-
-
-
